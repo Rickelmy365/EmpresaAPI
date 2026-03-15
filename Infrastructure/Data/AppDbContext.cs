@@ -13,6 +13,6 @@ namespace EmpresaAPI.Infrastructure.Data
         {
         }
 
-        public DbSet<Funcionarios> Funcionarios { get; set; }
+        public DbSet<Pacientes> Pacientes { get; set; }
     }
 }

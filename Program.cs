@@ -21,10 +21,18 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "SGHSS - Sistema de Gestão Hospitalar e de Saúde",
+        Version = "v1",
+        Description = "API para gerenciamento de pacientes do sistema hospitalar SGHSS",
+    });
+});
 
-builder.Services.AddScoped<IFuncionariosRepository, FuncionariosRepository>();
-builder.Services.AddScoped<FuncionariosServices>();
+builder.Services.AddScoped<IPacientesRepository, PacientesRepository>();
+builder.Services.AddScoped<PacientesServices>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

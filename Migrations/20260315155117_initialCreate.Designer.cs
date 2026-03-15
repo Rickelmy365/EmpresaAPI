@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EmpresaAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251217030947_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260315155117_initialCreate")]
+    partial class initialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,7 +24,7 @@ namespace EmpresaAPI.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("EmpresaAPI.Domain.Entites.Funcionarios", b =>
+            modelBuilder.Entity("EmpresaAPI.Domain.Entites.Pacientes", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -32,18 +32,24 @@ namespace EmpresaAPI.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Cargo")
+                    b.Property<string>("CPF")
                         .HasColumnType("longtext");
+
+                    b.Property<int>("Idade")
+                        .HasColumnType("int");
 
                     b.Property<string>("Nome")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("Salario")
-                        .HasColumnType("int");
+                    b.Property<string>("Sexo")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Telefone")
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Funcionarios");
+                    b.ToTable("Pacientes");
                 });
 #pragma warning restore 612, 618
         }

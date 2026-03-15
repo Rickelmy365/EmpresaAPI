@@ -3271,11 +3271,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Joao Carlos\\EmpresaAPI\\EmpresaAPI.csproj",
-      "projectName": "EmpresaAPI",
-      "projectPath": "C:\\Users\\Joao Carlos\\EmpresaAPI\\EmpresaAPI.csproj",
+      "projectUniqueName": "C:\\Users\\Joao Carlos\\Desktop\\Rickelmy_4772152_TrabalhoAPI\\EmpresaAPI\\SGHSS.csproj",
+      "projectName": "SGHSS",
+      "projectPath": "C:\\Users\\Joao Carlos\\Desktop\\Rickelmy_4772152_TrabalhoAPI\\EmpresaAPI\\SGHSS.csproj",
       "packagesPath": "C:\\Users\\Joao Carlos\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Joao Carlos\\EmpresaAPI\\obj\\",
+      "outputPath": "C:\\Users\\Joao Carlos\\Desktop\\Rickelmy_4772152_TrabalhoAPI\\EmpresaAPI\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Joao Carlos\\AppData\\Roaming\\NuGet\\NuGet.Config"
