@@ -1,92 +1,149 @@
-# EmpresaAPI
+# 🏥 SGHSS.API
 
-API REST desenvolvida em **ASP.NET Core (.NET 8)** para gerenciamento de funcionários, utilizando **Entity Framework Core** com **MySQL**.
+Sistema de Gestão Hospitalar e Serviços de Saúde
+
+## 📌 Sobre o projeto
+
+A **SGHSS.API** é uma API REST desenvolvida em **.NET** com o objetivo de simular um sistema de gestão hospitalar.
+
+O projeto permite:
+
+* Cadastro de pacientes
+* Autenticação de usuários com JWT
+* Controle de acesso às rotas
+* Operações CRUD (Create, Read, Update, Delete)
+
+A arquitetura segue boas práticas utilizadas em sistemas reais, separando responsabilidades em camadas.
 
 ---
 
-## 📌 Tecnologias Utilizadas
+## 🏗️ Arquitetura do projeto
 
-- .NET 8
-- ASP.NET Core Web API
-- Entity Framework Core
-- Entity framework Core Design
-- MySQL
-- Pomelo.EntityFrameworkCore.MySql
-- Swagger (OpenAPI)
-
----
-
-## 📁 Estrutura do Projeto
+O projeto foi organizado seguindo uma estrutura em camadas:
 
 ```
-EmpresaAPI
+Application     → Controllers (entrada da API)
+Domain          → Entidades, Interfaces e Regras de negócio
+Infrastructure  → Banco de dados e Repositórios
+```
+
+### 📂 Estrutura
+
+```
+SGHSS.API
 │
 ├── Application
-│   └── FuncionariosController.cs
+│   ├── PacientesController.cs
+│   └── AuthController.cs
 │
 ├── Domain
 │   ├── Entites
-│   │   └── Funcionarios.cs
+│   │   ├── Pacientes.cs
+│   │   └── Usuario.cs
+│   │
 │   ├── Interfaces
-│   │   └── IFuncionariosRepository.cs
+│   │   └── IPacientesRepository.cs
+│   │
 │   └── Services
-│       └── FuncionariosServices.cs
+│       ├── PacientesServices.cs
+│       └── AuthService.cs
 │
 ├── Infrastructure
 │   ├── Data
 │   │   └── AppDbContext.cs
-│   └── FuncionariosRepository.cs
+│   │
+│   └── Repository
+│       └── PacientesRepository.cs
 │
-├── Migrations
-├── Program.cs
-├── appsettings.json
-└── EmpresaAPI.csproj
+└── Program.cs
 ```
 
 ---
 
-## ⚙️ Pré-requisitos
+## 🔐 Autenticação com JWT
 
-Antes de executar o projeto, certifique-se de ter instalado:
+O sistema utiliza **JWT (JSON Web Token)** para autenticação.
 
-- **.NET SDK 8.0+**
-- **MySQL Server** (8.0 ou superior)
-- **DBeaver** ou outro cliente MySQL (opcional)
+### Fluxo:
 
-Verifique o SDK:
+1. Usuário se cadastra
+2. Usuário faz login
+3. API gera um token JWT
+4. O token é usado para acessar rotas protegidas
+
+---
+
+## 🚀 Funcionalidades
+
+### 🔑 Autenticação
+
+| Método | Rota                    | Descrição                |
+| ------ | ----------------------- | ------------------------ |
+| POST   | `/api/v1/auth/register` | Cadastrar usuário        |
+| POST   | `/api/v1/auth/login`    | Login e geração de token |
+
+---
+
+### 👤 Pacientes (Protegido por JWT)
+
+| Método | Rota                     | Descrição          |
+| ------ | ------------------------ | ------------------ |
+| GET    | `/api/v1/pacientes`      | Listar pacientes   |
+| POST   | `/api/v1/pacientes`      | Cadastrar paciente |
+| PUT    | `/api/v1/pacientes/{id}` | Atualizar paciente |
+| DELETE | `/api/v1/pacientes/{id}` | Remover paciente   |
+
+---
+
+## 🛠️ Tecnologias utilizadas
+
+* .NET 8
+* ASP.NET Core
+* Entity Framework Core
+* MySQL
+* JWT Authentication
+* Swagger (OpenAPI)
+
+---
+
+## ⚙️ Como executar o projeto
+
+### 1️⃣ Clonar o repositório
+
 ```
-dotnet --info
+git clone https://github.com/seu-usuario/SGHSS.API.git
 ```
 
 ---
 
-## 🔐 Configuração do Banco de Dados
+### 2️⃣ Acessar a pasta do projeto
 
-Edite o arquivo **`appsettings.json`** e configure a connection string:
+```
+cd SGHSS.API
+```
+
+---
+
+### 3️⃣ Configurar o banco de dados
+
+No arquivo:
+
+```
+appsettings.json
+```
+
+Configure a string de conexão:
 
 ```json
 "ConnectionStrings": {
-  "DefaultConnection": "Server=localhost;Database=empresa_db;User=root;Password=sua_senha;"
+  "DefaultConnection": "server=localhost; Port=3306;database=empresa_db; User=root; Password=root;"
 }
 ```
 
 ---
 
-## 📦 Restaurar Dependências
+### 4️⃣ Criar o banco com migrations
 
-```
-dotnet restore
-```
-
----
-
-## 🧱 Executar Migrations
-
-```
-dotnet ef database update
-```
-
-Caso ainda não exista migration:
 ```
 dotnet ef migrations add InitialCreate
 dotnet ef database update
@@ -94,41 +151,82 @@ dotnet ef database update
 
 ---
 
-## ▶️ Executar a Aplicação
+### 5️⃣ Executar a aplicação
 
 ```
 dotnet run
 ```
 
-A API ficará disponível em:
+---
+
+### 6️⃣ Acessar o Swagger
+
+Abra no navegador:
 
 ```
-http://localhost:5024
+https://localhost:xxxx/swagger
 ```
 
 ---
 
-## 📑 Swagger
+## 🔐 Como usar autenticação
 
-Acesse no navegador:
+### 1. Registrar usuário
 
 ```
-http://localhost:5024/swagger
+POST /api/v1/auth/register
+```
+
+Exemplo:
+
+```
+email: admin@sghss.com
+senha: 123456
 ```
 
 ---
 
-## 📌 Endpoints Principais
+### 2. Fazer login
 
-| Método | Rota                          | Descrição                   |
-|------|-------------------------------|-----------------------------|
-| GET  | /api/v1/Funcionarios          | Lista funcionários          |
-| POST | /api/v1/Funcionarios          | Cadastra funcionário        |
-| PUT  | /api/v1/Funcionarios/{id}     | Atualiza funcionário        |
-| DELETE | /api/v1/Funcionarios/{id}  | Remove funcionário          |
+```
+POST /api/v1/auth/login
+```
+
+Retorno:
+
+```json
+{
+  "token": "SEU_TOKEN_AQUI"
+}
+```
+
+---
+
+### 3. Usar token nas requisições
+
+Adicionar no Header:
+
+```
+Authorization: Bearer SEU_TOKEN
+```
+
+---
+
+## 📌 Melhorias futuras
+
+* Criptografia de senha (BCrypt)
+* Cadastro de médicos
+* Sistema de consultas
+* Prontuário eletrônico
+* Controle de permissões por perfil
 
 ---
 
 ## 👨‍💻 Autor
 
-Projeto desenvolvido para fins de estudo em ASP.NET Core e Entity Framework Core.
+Desenvolvido por **Rickelmy Ferreira de Souza Ribeiro**
+Estudante de Análise e Desenvolvimento de Sistemas
+
+---
+
+
