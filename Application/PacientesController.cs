@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using EmpresaAPI.Domain.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EmpresaAPI.Application
 {
+    [Authorize]
     [ApiController]
     [Route("api/v1/[controller]")]
     public class PacientesController : ControllerBase

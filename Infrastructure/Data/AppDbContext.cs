@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using EmpresaAPI.Domain.Entites;
+using SGHSS.API.Domain.Entities;
 
 namespace EmpresaAPI.Infrastructure.Data
 {
@@ -14,5 +15,6 @@ namespace EmpresaAPI.Infrastructure.Data
         }
 
         public DbSet<Pacientes> Pacientes { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
     }
 }

@@ -122,3 +122,11 @@ C:\Users\Joao Carlos\Desktop\Rickelmy_4772152_TrabalhoAPI\EmpresaAPI\obj\Debug\n
 C:\Users\Joao Carlos\Desktop\Rickelmy_4772152_TrabalhoAPI\EmpresaAPI\obj\Debug\net9.0\SGHSS.pdb
 C:\Users\Joao Carlos\Desktop\Rickelmy_4772152_TrabalhoAPI\EmpresaAPI\obj\Debug\net9.0\SGHSS.genruntimeconfig.cache
 C:\Users\Joao Carlos\Desktop\Rickelmy_4772152_TrabalhoAPI\EmpresaAPI\obj\Debug\net9.0\ref\SGHSS.dll
+C:\Users\Joao Carlos\Desktop\Rickelmy_4772152_TrabalhoAPI\EmpresaAPI\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Joao Carlos\Desktop\Rickelmy_4772152_TrabalhoAPI\EmpresaAPI\bin\Debug\net9.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\Joao Carlos\Desktop\Rickelmy_4772152_TrabalhoAPI\EmpresaAPI\bin\Debug\net9.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\Joao Carlos\Desktop\Rickelmy_4772152_TrabalhoAPI\EmpresaAPI\bin\Debug\net9.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\Joao Carlos\Desktop\Rickelmy_4772152_TrabalhoAPI\EmpresaAPI\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.dll
+C:\Users\Joao Carlos\Desktop\Rickelmy_4772152_TrabalhoAPI\EmpresaAPI\bin\Debug\net9.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\Joao Carlos\Desktop\Rickelmy_4772152_TrabalhoAPI\EmpresaAPI\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\Joao Carlos\Desktop\Rickelmy_4772152_TrabalhoAPI\EmpresaAPI\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
