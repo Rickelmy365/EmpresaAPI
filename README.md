@@ -16,6 +16,8 @@ O projeto permite:
 
 A arquitetura segue boas práticas utilizadas em sistemas reais, separando responsabilidades em camadas.
 
+
+## LINGUAGENS UTILIZADAS NO PROJETO
 ---
 
 ## 🏗️ Arquitetura do projeto
@@ -280,3 +282,4 @@ Desenvolvido por **Rickelmy Ferreira de Souza Ribeiro**
 Estudante de Análise e Desenvolvimento de Sistemas
 
 --------------Trabalho final de ADS---------------------
+
