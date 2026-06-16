@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZTto14fB4G4=",
+  "dgSpecHash": "xxSLj6VDHjY=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Joao Carlos\\Desktop\\Rickelmy_4772152_TrabalhoAPI\\EmpresaAPI\\SGHSS.csproj",
+  "projectFilePath": "C:\\Users\\Joao Carlos\\Documents\\Rickelmy_4772152_TrabalhoAPI\\EmpresaAPI\\SGHSS.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Joao Carlos\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Joao Carlos\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\9.0.0\\microsoft.aspnetcore.authentication.jwtbearer.9.0.0.nupkg.sha512",

@@ -55,8 +55,60 @@ SGHSS.API
 │   └── Repository
 │       └── PacientesRepository.cs
 │
+├── wwwroot
+│   └── sghss-interface.html   ← interface gráfica
+│
 └── Program.cs
 ```
+
+---
+
+## 🖥️ Interface Gráfica
+
+O projeto conta com uma interface web moderna que permite utilizar todas as funcionalidades da API sem precisar do Swagger.
+
+### ✅ Funcionalidades da interface
+
+* Tela de login e cadastro de usuário
+* Dashboard com estatísticas dos pacientes (total, sexo, idade média)
+* Listagem de pacientes em tabela com busca em tempo real
+* Cadastro, edição e remoção de pacientes via modais
+* Feedback visual com notificações de sucesso e erro
+* Campo configurável para URL da API
+
+### 📥 Como instalar a interface
+
+**1. Habilitar arquivos estáticos no `Program.cs`**
+
+Adicione a linha `app.UseStaticFiles()` antes de `app.MapControllers()`:
+
+```csharp
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseStaticFiles(); // ← adicionar esta linha
+
+app.MapControllers();
+app.Run();
+```
+
+
+
+**2. Executar a aplicação normalmente**
+
+```
+dotnet run
+```
+
+**3. Acessar a interface no navegador**
+
+```
+http://localhost:5024/sghss-interface.html
+
+*Linguagens Utilidas na interface HTML+CSS & JavaScript
+```
+
+> A URL da API pode ser ajustada diretamente no campo exibido na tela de login, caso o projeto rode em outra porta.
 
 ---
 
@@ -97,7 +149,7 @@ O sistema utiliza **JWT (JSON Web Token)** para autenticação.
 
 ## 🛠️ Tecnologias utilizadas
 
-* .NET 8
+* .NET 9
 * ASP.NET Core
 * Entity Framework Core
 * MySQL
@@ -119,20 +171,14 @@ git clone https://github.com/seu-usuario/SGHSS.API.git
 ### 2️⃣ Acessar a pasta do projeto
 
 ```
-cd SGHSS.API
+cd SGHSS.csproj
 ```
 
 ---
 
 ### 3️⃣ Configurar o banco de dados
 
-No arquivo:
-
-```
-appsettings.json
-```
-
-Configure a string de conexão:
+No arquivo `appsettings.json`, configure a string de conexão:
 
 ```json
 "ConnectionStrings": {
@@ -159,12 +205,16 @@ dotnet run
 
 ---
 
-### 6️⃣ Acessar o Swagger
-
-Abra no navegador:
+### 6️⃣ Acessar a interface gráfica
 
 ```
-https://localhost:xxxx/swagger
+http://localhost:5024/sghss-interface.html
+```
+
+### 6️⃣ Ou acessar o Swagger
+
+```
+http://localhost:5024/swagger
 ```
 
 ---
@@ -198,6 +248,7 @@ Retorno:
 {
   "token": "SEU_TOKEN_AQUI"
 }
+# Obs: na interface entra automaticamente #
 ```
 
 ---
@@ -227,6 +278,4 @@ Authorization: Bearer SEU_TOKEN
 Desenvolvido por **Rickelmy Ferreira de Souza Ribeiro**
 Estudante de Análise e Desenvolvimento de Sistemas
 
----
-
-
+--------------Trabalho final de ADS---------------------

@@ -105,4 +105,5 @@ app.UseAuthentication();   // primeiro autenticação
 app.UseAuthorization();    // depois autorização
 
 app.MapControllers();
+app.UseStaticFiles();
 app.Run();

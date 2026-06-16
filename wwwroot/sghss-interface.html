@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SGHSS — Sistema de Gestão Hospitalar</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  /* ── Design tokens ── */
+  :root {
+    --teal:       #0B7B6F;
+    --teal-mid:   #0FA592;
+    --teal-light: #E6F5F3;
+    --teal-glow:  #0FA59222;
+    --ink:        #0D1F1E;
+    --ink-mid:    #3A4E4C;
+    --ink-faint:  #7E9896;
+    --surface:    #F4FAF9;
+    --white:      #FFFFFF;
+    --border:     #D0E8E4;
+    --danger:     #C0392B;
+    --danger-bg:  #FDECEA;
+    --warn:       #D68910;
+    --warn-bg:    #FEF9E7;
+    --ok:         #1A7F5A;
+    --ok-bg:      #E8F8F2;
+
+    --radius-sm:  6px;
+    --radius:     12px;
+    --radius-lg:  18px;
+
+    --shadow-sm: 0 1px 4px rgba(11,123,111,.08);
+    --shadow:    0 4px 20px rgba(11,123,111,.12);
+    --shadow-lg: 0 8px 40px rgba(11,123,111,.18);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    background: var(--surface);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Auth screen ── */
+  #auth-screen {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0B7B6F 0%, #0D5C53 50%, #082E2A 100%);
+    padding: 24px;
+  }
+
+  .auth-card {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 420px;
+    overflow: hidden;
+  }
+
+  .auth-header {
+    background: linear-gradient(135deg, var(--teal) 0%, #0FA592 100%);
+    padding: 36px 36px 28px;
+    color: #fff;
+  }
+
+  .auth-header .logo-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .auth-header .logo-icon {
+    width: 40px; height: 40px;
+    background: rgba(255,255,255,.2);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .auth-header .logo-icon svg { width: 22px; height: 22px; }
+
+  .auth-header .logo-name {
+    font-size: 17px; font-weight: 600; letter-spacing: .5px;
+  }
+
+  .auth-header h1 { font-size: 26px; font-weight: 600; line-height: 1.2; }
+  .auth-header p  { margin-top: 6px; font-size: 14px; opacity: .75; }
+
+  .auth-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .auth-tab {
+    flex: 1; padding: 14px;
+    background: none; border: none; cursor: pointer;
+    font-family: inherit; font-size: 14px; font-weight: 500;
+    color: var(--ink-faint);
+    border-bottom: 2px solid transparent;
+    transition: all .2s;
+  }
+
+  .auth-tab.active {
+    color: var(--teal);
+    border-bottom-color: var(--teal);
+  }
+
+  .auth-body { padding: 28px 36px 36px; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── Form controls ── */
+  .field { margin-bottom: 16px; }
+
+  label {
+    display: block;
+    font-size: 12px; font-weight: 600;
+    color: var(--ink-mid);
+    letter-spacing: .6px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--white);
+    transition: border-color .15s, box-shadow .15s;
+    outline: none;
+    appearance: none;
+  }
+
+  input:focus, select:focus {
+    border-color: var(--teal-mid);
+    box-shadow: 0 0 0 3px var(--teal-glow);
+  }
+
+  /* ── Buttons ── */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 7px;
+    padding: 11px 20px;
+    border: none; border-radius: var(--radius-sm);
+    font-family: inherit; font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: all .15s;
+    white-space: nowrap;
+  }
+
+  .btn-primary {
+    background: var(--teal);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(11,123,111,.3);
+  }
+
+  .btn-primary:hover { background: #0B6B60; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(11,123,111,.35); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--teal);
+    border: 1.5px solid var(--border);
+  }
+
+  .btn-ghost:hover { border-color: var(--teal); background: var(--teal-light); }
+
+  .btn-danger {
+    background: transparent;
+    color: var(--danger);
+    border: 1.5px solid #ECC;
+  }
+
+  .btn-danger:hover { background: var(--danger-bg); }
+
+  .btn-sm { padding: 7px 14px; font-size: 13px; }
+  .btn-full { width: 100%; }
+
+  .btn:disabled { opacity: .5; cursor: not-allowed; transform: none !important; }
+
+  /* ── App layout ── */
+  #app-screen { display: none; flex-direction: column; min-height: 100vh; }
+  #app-screen.active { display: flex; }
+
+  .topbar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 28px;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .topbar-brand {
+    display: flex; align-items: center; gap: 10px;
+  }
+
+  .topbar-logo {
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg, var(--teal), var(--teal-mid));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .topbar-logo svg { width: 18px; height: 18px; color: #fff; }
+
+  .topbar-name { font-size: 16px; font-weight: 600; color: var(--teal); }
+  .topbar-version {
+    font-size: 11px; color: var(--ink-faint);
+    font-family: 'DM Mono', monospace;
+    padding: 2px 7px;
+    background: var(--teal-light);
+    border-radius: 4px;
+    margin-left: 2px;
+  }
+
+  .topbar-right { display: flex; align-items: center; gap: 12px; }
+
+  .user-chip {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 14px 5px 5px;
+  }
+
+  .user-avatar {
+    width: 28px; height: 28px;
+    background: linear-gradient(135deg, var(--teal), var(--teal-mid));
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #fff;
+  }
+
+  .user-chip span { font-size: 13px; color: var(--ink-mid); font-weight: 500; }
+
+  /* ── Main content ── */
+  .main { flex: 1; padding: 32px 28px; max-width: 1100px; width: 100%; margin: 0 auto; }
+
+  /* ── Page header ── */
+  .page-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 28px;
+    flex-wrap: wrap; gap: 16px;
+  }
+
+  .page-title { font-size: 26px; font-weight: 600; color: var(--ink); }
+  .page-subtitle { font-size: 14px; color: var(--ink-faint); margin-top: 4px; }
+
+  /* ── Stats row ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: box-shadow .2s;
+  }
+
+  .stat-card:hover { box-shadow: var(--shadow); }
+
+  .stat-label { font-size: 12px; font-weight: 600; color: var(--ink-faint); text-transform: uppercase; letter-spacing: .6px; }
+  .stat-value { font-size: 32px; font-weight: 600; color: var(--teal); margin-top: 6px; font-family: 'DM Mono', monospace; }
+  .stat-detail { font-size: 12px; color: var(--ink-faint); margin-top: 4px; }
+
+  /* ── Panel ── */
+  .panel {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .panel-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+  }
+
+  .panel-title { font-size: 15px; font-weight: 600; color: var(--ink); }
+
+  .search-bar {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 7px 12px;
+    min-width: 220px;
+  }
+
+  .search-bar svg { width: 15px; height: 15px; color: var(--ink-faint); flex-shrink: 0; }
+
+  .search-bar input {
+    border: none; background: none; padding: 0;
+    font-size: 13px; outline: none; width: 100%;
+  }
+
+  .search-bar input:focus { box-shadow: none; }
+
+  /* ── Table ── */
+  .table-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  thead th {
+    text-align: left;
+    padding: 11px 20px;
+    font-size: 11px; font-weight: 600;
+    color: var(--ink-faint);
+    text-transform: uppercase; letter-spacing: .6px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #EEF5F4;
+    transition: background .12s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--teal-light); }
+
+  td {
+    padding: 13px 20px;
+    color: var(--ink-mid);
+    vertical-align: middle;
+  }
+
+  td.name { font-weight: 500; color: var(--ink); }
+
+  .badge {
+    display: inline-flex; align-items: center;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px; font-weight: 500;
+  }
+
+  .badge-M { background: #E8F1FF; color: #2563EB; }
+  .badge-F { background: #FDE8F4; color: #BE185D; }
+  .badge-O { background: var(--warn-bg); color: var(--warn); }
+
+  .actions-cell { display: flex; gap: 6px; }
+
+  .id-chip {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-faint);
+    background: var(--surface);
+    padding: 2px 7px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+
+  /* ── Empty state ── */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--ink-faint);
+  }
+
+  .empty-state svg { width: 48px; height: 48px; opacity: .3; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; }
+
+  /* ── Modal ── */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(13,31,30,.5);
+    backdrop-filter: blur(3px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000; padding: 24px;
+    opacity: 0; pointer-events: none;
+    transition: opacity .2s;
+  }
+
+  .overlay.open { opacity: 1; pointer-events: auto; }
+
+  .modal {
+    background: var(--white);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    width: 100%; max-width: 480px;
+    transform: translateY(16px);
+    transition: transform .25s;
+  }
+
+  .overlay.open .modal { transform: translateY(0); }
+
+  .modal-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .modal-title { font-size: 16px; font-weight: 600; }
+
+  .modal-close {
+    width: 30px; height: 30px;
+    border: none; background: none; cursor: pointer;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-faint);
+    transition: background .15s;
+  }
+
+  .modal-close:hover { background: var(--surface); color: var(--ink); }
+
+  .modal-body { padding: 24px; }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .form-grid .field-full { grid-column: 1/-1; }
+
+  .modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: flex-end; gap: 10px;
+  }
+
+  /* ── Toast ── */
+  .toast-container {
+    position: fixed; bottom: 24px; right: 24px;
+    display: flex; flex-direction: column; gap: 10px;
+    z-index: 9999;
+  }
+
+  .toast {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow);
+    font-size: 14px; font-weight: 500;
+    min-width: 240px;
+    animation: slideUp .25s ease;
+  }
+
+  .toast svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+  .toast-ok { background: var(--ok-bg); color: var(--ok); border: 1px solid #A8DFC8; }
+  .toast-err { background: var(--danger-bg); color: var(--danger); border: 1px solid #ECBBBB; }
+  .toast-info { background: var(--teal-light); color: var(--teal); border: 1px solid var(--border); }
+
+  @keyframes slideUp {
+    from { opacity:0; transform: translateY(12px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+
+  /* ── Spinner ── */
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .65s linear infinite;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Config panel ── */
+  .config-bar {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--teal-light);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 16px;
+    margin-bottom: 20px;
+    font-size: 13px; color: var(--teal);
+    flex-wrap: wrap;
+  }
+
+  .config-bar svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+  .config-bar input {
+    flex: 1; min-width: 200px;
+    padding: 6px 10px;
+    font-size: 13px;
+    font-family: 'DM Mono', monospace;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--white);
+  }
+
+  /* ── Confirm dialog ── */
+  .confirm-text { font-size: 14px; color: var(--ink-mid); line-height: 1.6; }
+  .confirm-text strong { color: var(--danger); }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    .main { padding: 20px 14px; }
+    .topbar { padding: 0 14px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .topbar-version { display: none; }
+    .page-header { flex-direction: column; }
+    .panel-header { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     AUTH SCREEN
+═══════════════════════════════════════════ -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="logo-mark">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+          </svg>
+        </div>
+        <span class="logo-name">SGHSS</span>
+      </div>
+      <h1>Sistema de Gestão<br/>Hospitalar e de Saúde</h1>
+      <p>Acesse com suas credenciais para continuar</p>
+    </div>
+
+    <!-- Config bar -->
+    <div style="padding:16px 24px 0;">
+      <div class="config-bar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 0 0 12 2a10 10 0 0 0-7.07 2.93"/></svg>
+        <span>API:</span>
+        <input id="api-url-input" type="text" value="http://localhost:5024" placeholder="http://localhost:5024" />
+      </div>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">Entrar</button>
+      <button class="auth-tab" onclick="switchAuthTab('register')">Criar conta</button>
+    </div>
+
+    <div class="auth-body">
+      <!-- Login -->
+      <div id="tab-login" class="tab-panel active">
+        <div class="field">
+          <label>E-mail</label>
+          <input id="login-email" type="email" placeholder="seu@email.com" />
+        </div>
+        <div class="field">
+          <label>Senha</label>
+          <input id="login-senha" type="password" placeholder="••••••••" />
+        </div>
+        <button class="btn btn-primary btn-full" id="btn-login" onclick="doLogin()">
+          Entrar
+        </button>
+      </div>
+
+      <!-- Register -->
+      <div id="tab-register" class="tab-panel">
+        <div class="field">
+          <label>E-mail</label>
+          <input id="reg-email" type="email" placeholder="seu@email.com" />
+        </div>
+        <div class="field">
+          <label>Senha</label>
+          <input id="reg-senha" type="password" placeholder="Mínimo 6 caracteres" />
+        </div>
+        <button class="btn btn-primary btn-full" id="btn-register" onclick="doRegister()">
+          Criar conta
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     APP SCREEN
+═══════════════════════════════════════════ -->
+<div id="app-screen">
+  <nav class="topbar">
+    <div class="topbar-brand">
+      <div class="topbar-logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+        </svg>
+      </div>
+      <span class="topbar-name">SGHSS</span>
+      <span class="topbar-version">v1</span>
+    </div>
+    <div class="topbar-right">
+      <div class="user-chip">
+        <div class="user-avatar" id="user-avatar">U</div>
+        <span id="user-label">Usuário</span>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="doLogout()">Sair</button>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">Pacientes</h1>
+        <p class="page-subtitle">Gerencie os cadastros de pacientes do sistema</p>
+      </div>
+      <button class="btn btn-primary" onclick="openModal('create')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Novo Paciente
+      </button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Total</div>
+        <div class="stat-value" id="stat-total">—</div>
+        <div class="stat-detail">pacientes cadastrados</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Masculino</div>
+        <div class="stat-value" id="stat-m">—</div>
+        <div class="stat-detail">pacientes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Feminino</div>
+        <div class="stat-value" id="stat-f">—</div>
+        <div class="stat-detail">pacientes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Idade média</div>
+        <div class="stat-value" id="stat-age">—</div>
+        <div class="stat-detail">anos</div>
+      </div>
+    </div>
+
+    <!-- Table panel -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Lista de Pacientes</span>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <div class="search-bar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Buscar por nome ou CPF…" oninput="filterTable(this.value)" />
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="loadPacientes()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Atualizar
+          </button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nome</th>
+              <th>Idade</th>
+              <th>Sexo</th>
+              <th>CPF</th>
+              <th>Telefone</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="table-body">
+            <tr>
+              <td colspan="7">
+                <div class="empty-state">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  <p>Nenhum paciente cadastrado ainda.</p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════
+     MODAL — CREATE / EDIT
+═══════════════════════════════════════════ -->
+<div class="overlay" id="modal-overlay" onclick="closeModalOnOverlay(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title">Novo Paciente</span>
+      <button class="modal-close" onclick="closeModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="form-id" />
+      <div class="form-grid">
+        <div class="field field-full">
+          <label>Nome completo</label>
+          <input id="form-nome" type="text" placeholder="Ex.: Maria da Silva" />
+        </div>
+        <div class="field">
+          <label>Idade</label>
+          <input id="form-idade" type="number" placeholder="Ex.: 35" min="1" max="130" />
+        </div>
+        <div class="field">
+          <label>Sexo</label>
+          <select id="form-sexo">
+            <option value="">Selecionar…</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Feminino">Feminino</option>
+            <option value="Outro">Outro</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>CPF</label>
+          <input id="form-cpf" type="text" placeholder="000.000.000-00" maxlength="14" oninput="maskCPF(this)" />
+        </div>
+        <div class="field">
+          <label>Telefone</label>
+          <input id="form-telefone" type="text" placeholder="(00) 00000-0000" maxlength="15" oninput="maskPhone(this)" />
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" id="btn-save" onclick="savePaciente()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DELETE -->
+<div class="overlay" id="confirm-overlay" onclick="closeConfirmOnOverlay(event)">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-header">
+      <span class="modal-title">Remover paciente</span>
+      <button class="modal-close" onclick="closeConfirm()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p class="confirm-text" id="confirm-text">Tem certeza que deseja remover este paciente? <strong>Esta ação não pode ser desfeita.</strong></p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeConfirm()">Cancelar</button>
+      <button class="btn btn-danger" id="btn-confirm-delete" onclick="confirmDelete()">Remover</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+/* ════════════════════════════════════════
+   STATE
+════════════════════════════════════════ */
+let token = '';
+let allPacientes = [];
+let deleteTargetId = null;
+let editMode = false;
+
+const API = () => document.getElementById('api-url-input').value.replace(/\/$/, '');
+
+/* ════════════════════════════════════════
+   TOAST
+════════════════════════════════════════ */
+function toast(msg, type = 'info') {
+  const icons = {
+    ok:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>`,
+    err:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+    info: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="8"/><line x1="12" y1="12" x2="12" y2="16"/></svg>`,
+  };
+  const el = document.createElement('div');
+  el.className = `toast toast-${type}`;
+  el.innerHTML = `${icons[type]||icons.info} ${msg}`;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+/* ════════════════════════════════════════
+   AUTH
+════════════════════════════════════════ */
+function switchAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach((t, i) =>
+    t.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'))
+  );
+  document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+  document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+}
+
+async function doRegister() {
+  const email = document.getElementById('reg-email').value.trim();
+  const senha = document.getElementById('reg-senha').value;
+  if (!email || !senha) return toast('Preencha e-mail e senha.', 'err');
+  const btn = document.getElementById('btn-register');
+  btn.innerHTML = '<div class="spinner"></div> Criando…'; btn.disabled = true;
+  try {
+    const res = await fetch(`${API()}/api/v1/auth/register?email=${encodeURIComponent(email)}&senha=${encodeURIComponent(senha)}`, { method: 'POST' });
+    const text = await res.text();
+    if (!res.ok) throw new Error(text || `Erro ${res.status}`);
+    toast('Conta criada! Faça login.', 'ok');
+    switchAuthTab('login');
+    document.getElementById('login-email').value = email;
+  } catch(e) { toast(e.message, 'err'); }
+  finally { btn.innerHTML = 'Criar conta'; btn.disabled = false; }
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const senha = document.getElementById('login-senha').value;
+  if (!email || !senha) return toast('Preencha e-mail e senha.', 'err');
+  const btn = document.getElementById('btn-login');
+  btn.innerHTML = '<div class="spinner"></div> Entrando…'; btn.disabled = true;
+  try {
+    const res = await fetch(`${API()}/api/v1/auth/login?email=${encodeURIComponent(email)}&senha=${encodeURIComponent(senha)}`, { method: 'POST' });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data || `Erro ${res.status}`);
+    token = data.token;
+    // set user display
+    const label = email.split('@')[0];
+    document.getElementById('user-label').textContent = label;
+    document.getElementById('user-avatar').textContent = label[0].toUpperCase();
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app-screen').classList.add('active');
+    toast(`Bem-vindo, ${label}!`, 'ok');
+    loadPacientes();
+  } catch(e) { toast('Credenciais inválidas.', 'err'); }
+  finally { btn.innerHTML = 'Entrar'; btn.disabled = false; }
+}
+
+function doLogout() {
+  token = ''; allPacientes = [];
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('app-screen').classList.remove('active');
+  document.getElementById('login-senha').value = '';
+  document.getElementById('table-body').innerHTML = `<tr><td colspan="7"><div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><p>Nenhum paciente cadastrado ainda.</p></div></td></tr>`;
+  ['stat-total','stat-m','stat-f','stat-age'].forEach(id => document.getElementById(id).textContent = '—');
+  toast('Sessão encerrada.', 'info');
+}
+
+/* ════════════════════════════════════════
+   PACIENTES — LOAD
+════════════════════════════════════════ */
+async function loadPacientes() {
+  try {
+    const res = await fetch(`${API()}/api/v1/Pacientes`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    if (res.status === 401) { toast('Sessão expirada. Faça login novamente.', 'err'); doLogout(); return; }
+    if (!res.ok) throw new Error(`Erro ${res.status}`);
+    allPacientes = await res.json();
+    renderTable(allPacientes);
+    updateStats(allPacientes);
+  } catch(e) { toast('Não foi possível carregar os pacientes.', 'err'); }
+}
+
+function updateStats(list) {
+  document.getElementById('stat-total').textContent = list.length;
+  const m = list.filter(p => p.sexo?.toLowerCase().startsWith('m')).length;
+  const f = list.filter(p => p.sexo?.toLowerCase().startsWith('f')).length;
+  document.getElementById('stat-m').textContent = m;
+  document.getElementById('stat-f').textContent = f;
+  const avgAge = list.length ? Math.round(list.reduce((a,p) => a + (p.idade||0), 0) / list.length) : '—';
+  document.getElementById('stat-age').textContent = avgAge;
+}
+
+function renderTable(list) {
+  const tbody = document.getElementById('table-body');
+  if (!list.length) {
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><p>Nenhum paciente encontrado.</p></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = list.map(p => {
+    const sexoKey = p.sexo?.toLowerCase().startsWith('m') ? 'M' : p.sexo?.toLowerCase().startsWith('f') ? 'F' : 'O';
+    return `
+    <tr>
+      <td><span class="id-chip">#${p.id}</span></td>
+      <td class="name">${esc(p.nome)}</td>
+      <td>${p.idade} anos</td>
+      <td><span class="badge badge-${sexoKey}">${esc(p.sexo)}</span></td>
+      <td>${fmtCPF(p.cpf)}</td>
+      <td>${fmtPhone(p.telefone)}</td>
+      <td>
+        <div class="actions-cell">
+          <button class="btn btn-ghost btn-sm" onclick="openModal('edit',${JSON.stringify(p).replace(/"/g,'&quot;')})">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Editar
+          </button>
+          <button class="btn btn-danger btn-sm" onclick="askDelete(${p.id},'${esc(p.nome)}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          </button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function filterTable(q) {
+  const s = q.toLowerCase();
+  const filtered = allPacientes.filter(p =>
+    (p.nome||'').toLowerCase().includes(s) || (p.cpf||'').includes(s)
+  );
+  renderTable(filtered);
+}
+
+/* ════════════════════════════════════════
+   MODAL
+════════════════════════════════════════ */
+function openModal(mode, paciente) {
+  editMode = mode === 'edit';
+  document.getElementById('modal-title').textContent = editMode ? 'Editar Paciente' : 'Novo Paciente';
+  if (editMode && paciente) {
+    document.getElementById('form-id').value = paciente.id;
+    document.getElementById('form-nome').value = paciente.nome || '';
+    document.getElementById('form-idade').value = paciente.idade || '';
+    document.getElementById('form-sexo').value = paciente.sexo || '';
+    document.getElementById('form-cpf').value = fmtCPF(paciente.cpf) || '';
+    document.getElementById('form-telefone').value = fmtPhone(paciente.telefone) || '';
+  } else {
+    ['form-id','form-nome','form-idade','form-cpf','form-telefone'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('form-sexo').value = '';
+  }
+  document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('form-nome').focus(), 100);
+}
+
+function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+function closeModalOnOverlay(e) { if (e.target === document.getElementById('modal-overlay')) closeModal(); }
+
+async function savePaciente() {
+  const nome     = document.getElementById('form-nome').value.trim();
+  const idade    = parseInt(document.getElementById('form-idade').value);
+  const sexo     = document.getElementById('form-sexo').value;
+  const cpf      = document.getElementById('form-cpf').value.replace(/\D/g,'');
+  const telefone = document.getElementById('form-telefone').value.replace(/\D/g,'');
+
+  if (!nome)   return toast('Informe o nome do paciente.', 'err');
+  if (!idade)  return toast('Informe a idade.', 'err');
+  if (!sexo)   return toast('Selecione o sexo.', 'err');
+  if (!cpf)    return toast('Informe o CPF.', 'err');
+
+  const btn = document.getElementById('btn-save');
+  btn.innerHTML = '<div class="spinner"></div>'; btn.disabled = true;
+
+  const params = new URLSearchParams({ nome, idade, sexo, cpf, telefone });
+
+  try {
+    let res;
+    if (editMode) {
+      const id = document.getElementById('form-id').value;
+      res = await fetch(`${API()}/api/v1/Pacientes/${id}?${params}`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+    } else {
+      res = await fetch(`${API()}/api/v1/Pacientes?${params}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+    }
+    const text = await res.text();
+    if (!res.ok) throw new Error(text || `Erro ${res.status}`);
+    toast(editMode ? 'Paciente atualizado!' : 'Paciente cadastrado!', 'ok');
+    closeModal();
+    loadPacientes();
+  } catch(e) { toast(e.message, 'err'); }
+  finally { btn.innerHTML = 'Salvar'; btn.disabled = false; }
+}
+
+/* ════════════════════════════════════════
+   CONFIRM DELETE
+════════════════════════════════════════ */
+function askDelete(id, nome) {
+  deleteTargetId = id;
+  document.getElementById('confirm-text').innerHTML = `Tem certeza que deseja remover <strong>${esc(nome)}</strong>? <strong>Esta ação não pode ser desfeita.</strong>`;
+  document.getElementById('confirm-overlay').classList.add('open');
+}
+
+function closeConfirm() { document.getElementById('confirm-overlay').classList.remove('open'); deleteTargetId = null; }
+function closeConfirmOnOverlay(e) { if (e.target === document.getElementById('confirm-overlay')) closeConfirm(); }
+
+async function confirmDelete() {
+  if (!deleteTargetId) return;
+  const btn = document.getElementById('btn-confirm-delete');
+  btn.innerHTML = '<div class="spinner" style="border-color:rgba(192,57,43,.3);border-top-color:#C0392B"></div>'; btn.disabled = true;
+  try {
+    const res = await fetch(`${API()}/api/v1/Pacientes/${deleteTargetId}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const text = await res.text();
+    if (!res.ok) throw new Error(text || `Erro ${res.status}`);
+    toast('Paciente removido.', 'ok');
+    closeConfirm();
+    loadPacientes();
+  } catch(e) { toast(e.message, 'err'); }
+  finally { btn.innerHTML = 'Remover'; btn.disabled = false; }
+}
+
+/* ════════════════════════════════════════
+   HELPERS
+════════════════════════════════════════ */
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function fmtCPF(v) {
+  if (!v) return '';
+  const d = String(v).replace(/\D/g,'').slice(0,11);
+  return d.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4') || v;
+}
+
+function fmtPhone(v) {
+  if (!v) return '';
+  const d = String(v).replace(/\D/g,'').slice(0,11);
+  return d.length === 11
+    ? d.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3')
+    : d.replace(/^(\d{2})(\d{4})(\d{4})$/, '($1) $2-$3') || v;
+}
+
+function maskCPF(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,11);
+  v = v.replace(/^(\d{3})(\d)/, '$1.$2')
+       .replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
+       .replace(/\.(\d{3})(\d)/, '.$1-$2');
+  el.value = v;
+}
+
+function maskPhone(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,11);
+  if (v.length > 10) v = v.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+  else if (v.length > 6) v = v.replace(/^(\d{2})(\d{4})(\d*)/, '($1) $2-$3');
+  else if (v.length > 2) v = v.replace(/^(\d{2})(\d*)/, '($1) $2');
+  el.value = v;
+}
+
+/* ── keyboard shortcut ── */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); closeConfirm(); }
+  if ((e.ctrlKey||e.metaKey) && e.key === 'Enter') {
+    if (document.getElementById('modal-overlay').classList.contains('open')) savePaciente();
+  }
+});
+</script>
+</body>
+</html>
