@@ -163,7 +163,7 @@ O sistema utiliza **JWT (JSON Web Token)** para autenticação.
 ### 1️⃣ Clonar o repositório
 
 ```
-git clone https://github.com/seu-usuario/SGHSS.API.git
+git clone https://github.com/Rickelmy365/EmpresaAPI.git
 ```
 
 ---
