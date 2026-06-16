@@ -4,7 +4,8 @@ Sistema de Gestão Hospitalar e Serviços de Saúde
 
 ## 📌 Sobre o projeto
 
-A **SGHSS.API** é uma API REST desenvolvida em **.NET** com o objetivo de simular um sistema de gestão hospitalar.
+A **SGHSS.API** é uma API REST desenvolvida em **.NET** com o objetivo de simular um sistema de gestão hospitalar
+utilizando como prinicipal linguagens o **C#**.
 
 O projeto permite:
 
